@@ -6,26 +6,50 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <style>
-
-  </style>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/css.css">
 </head>
 
 <body>
   <div id="app">
-    <h1>成長</h1>
-    <div v-for="(item,index) in growingSort" :key="'growing-' + index">
-      {{item.classDate | convertToChineseDay}} - {{item.Title}}
+    <div class="nav flex">
+      <a href="#grow" class="btn">成長</a>
+      <a href="#share" class="btn">分享</a>
     </div>
-    <h1>分享</h1>
-    <h2>線上分享會</h2>
-    <div v-for="(item,index) in sharingSort.onlineData" :key="'sharing-online-' + index">
-      {{item.classDate | convertToChineseDay}} - {{item.Title}}
+    <div class="warp">
+      <h1 id="grow">成長</h1>
+      <div v-for="(item,index) in growingSort" :key="'growing-' + index" class="item">
+        &#128142;【今日{{item.classDate}}】幸福學苑課程<br>
+        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+        <p v-if="item.Lesson === '每月固定課程'">每月固定課程</p>
+        <p v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}</p>
+        <p v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}</p>
+        <p>地點：{{item.Address}}</p>
+        <p v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></p>
+      </div>
+      <h1 id="share">分享</h1>
+      <h2>線上分享會</h2>
+      <div v-for="(item,index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="item">
+        &#128142;【今日{{item.classDate}}】線上分享會<br>
+        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+        <p v-if="item.Lesson === '每月固定課程'">每月固定課程</p>
+        <p v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}</p>
+        <p v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}</p>
+        <p>地點：{{item.Address}}</p>
+        <p v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></p>
+      </div>
+      <h2>實體分享會</h2>
+      <div v-for="(item,index) in sharingSort.localData" :key="'sharing-local-' + index" class="item">
+        &#128142;【今日{{item.classDate}}】實體分享會<br>
+        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+        <p v-if="item.Lesson === '每月固定課程'">每月固定課程</p>
+        <p v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}</p>
+        <p v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}</p>
+        <p>地點：{{item.Address}}</p>
+        <p v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></p>
+      </div>
     </div>
-    <h2>實體分享會</h2>
-    <div v-for="(item,index) in sharingSort.localData" :key="'sharing-local-' + index">
-      {{item.classDate | convertToChineseDay}} - {{item.Title}} - {{ item.Address}}
-    </div>
+
   </div>
 
 
@@ -41,6 +65,7 @@
         return {
           allData: [],
           err: "",
+          newUrl: [],
         }
       },
       created() {
@@ -51,7 +76,7 @@
             let excelData = XLSX.read(xlsx_data, { type: "array", cellText: false, cellDates: true });
             let jsonData = Object.keys(excelData.Sheets).map(name => ({
               name,
-              data: XLSX.utils.sheet_to_json(excelData.Sheets[name], {header: 0, raw: true, dateNF: 'yyyy/mm/dd' }),
+              data: XLSX.utils.sheet_to_json(excelData.Sheets[name], { header: 0, raw: false, dateNF: 'm/d' }),
             }));
             this.allData = jsonData[0].data;
           }).catch(err => {
@@ -61,7 +86,7 @@
       computed: {
         growingSort: function () {
           let setData;
-          setData = this.allData.filter(item =>{
+          setData = this.allData.filter(item => {
             return item.className === 'growing'
           })
           setData = setData.sort((a, b) => {
@@ -71,43 +96,58 @@
         },
         sharingSort: function () {
           let setData,
-              OnLine,
-              Local;
-          setData = this.allData.filter(item =>{
+            OnLine,
+            Local;
+          setData = this.allData.filter(item => {
             return item.className === 'sharing'
           })
-          OnLine = setData.filter(item =>{
+          OnLine = setData.filter(item => {
             return item.classType === '線上直播';
           }).sort((a, b) => {
             return new Date(a.classDate) - new Date(b.classDate);
           });
-          Local = setData.filter(item =>{
+          Local = setData.filter(item => {
             return item.classType === '實體現場';
           }).sort((a, b) => {
             return new Date(a.classDate) - new Date(b.classDate);
           }).sort((a, b) => {
             let aNum = a.Address.substr(0, 2),
-                bNum = b.Address.substr(0, 2);
-            console.log('aNum:', aNum);
-            console.log('bNum:', bNum);
+              bNum = b.Address.substr(0, 2);
             return aNum - bNum;
           });
-          return  {onlineData: OnLine,localData:Local};
+          return { onlineData: OnLine, localData: Local };
         },
       },
-      filters: {
-        convertToChineseDay: function (day) {
-          const theDay = new Date(day);
-          const getDay = theDay.getDay();
-          const getDate = theDay.getDate();
-          const getMonth = theDay.getMonth() + 1;
-          const chineseDay = ["日", "一", "二", "三", "四", "五", "六"];
-          if (isNaN(getDay)) {
-            return day;
-          }
-          return `${getMonth}月${getDate}日 (${chineseDay[getDay]})`;
+      methods: {
+        getTinyUrl(url) {
+          let apiUrl = `https://api.shrtco.de/v2/shorten?url=${url}`;
+          axios.get(apiUrl).then((res) => {
+            console.log('res.data.result.full_short_link2:', res.data.result.full_short_link2)
+          }).catch(err => {
+            console.log('err:', err)
+          })
         },
       },
+      // filters: {
+      //   convertToChineseDay: function (day) {
+      //     const theDay = new Date(day);
+      //     const getDay = theDay.getDay();
+      //     const chineseDay = ["日", "一", "二", "三", "四", "五", "六"];
+      //     if (isNaN(getDay)) {
+      //       return day;
+      //     }
+      //     return `(${chineseDay[getDay]})`;
+      //   },
+      //   convertDate: function (day) {
+      //     const theDay = new Date(day);
+      //     const getDate = theDay.getDate();
+      //     const getMonth = theDay.getMonth() + 1;
+      //     if (isNaN(getMonth)) {
+      //       return day;
+      //     }
+      //     return `${getMonth}/${getDate}`;
+      //   },
+      // },
     })
   </script>
 </body>

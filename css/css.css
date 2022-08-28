@@ -1,0 +1,36 @@
+h1{
+  padding: 20px 0;
+  font-size: 40px;
+  line-height: 40px;
+  font-weight: 700;
+}
+h2{
+  padding: 20px 0;
+  font-size: 30px;
+  line-height: 30px;
+  font-weight: 700;
+}
+.warp {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.flex{
+  display: flex;
+  flex-wrap: wrap;
+}
+.nav{
+  padding: 30px 0;
+  justify-content: center;
+}
+.btn{
+  margin: 0 10px;
+  padding: 5px;
+  border-radius: 6px;
+  border: 1px solid #bbb;
+  text-decoration: none;
+}
+.item{
+  padding: 20px 0;
+  border-bottom: 1px solid #ccc;
+}
