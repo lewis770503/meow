@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <h1>成長</h1>
+    <div v-for="(item,index) in growingSort" :key="'growing-' + index">
+      {{item.classDate | convertToChineseDay}} - {{item.Title}}
+    </div>
+    <h1>分享</h1>
+    <h2>線上分享會</h2>
+    <div v-for="(item,index) in sharingSort.onlineData" :key="'sharing-online-' + index">
+      {{item.classDate | convertToChineseDay}} - {{item.Title}}
+    </div>
+    <h2>實體分享會</h2>
+    <div v-for="(item,index) in sharingSort.localData" :key="'sharing-local-' + index">
+      {{item.classDate | convertToChineseDay}} - {{item.Title}} - {{ item.Address}}
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.js'
+    integrity='sha512-rozBdNtS7jw9BlC76YF1FQGjz17qQ0J/Vu9ZCFIW374sEy4EZRbRcUZa2RU/MZ90X2mnLU56F75VfdToGV0RiA=='
+    crossorigin='anonymous'></script>
+  <script src="js/xlsx.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data() {
+        return {
+          allData: [],
+          err: "",
+        }
+      },
+      created() {
+        var url = "./file/learn.xlsx"
+        axios.get(url, { responseType: 'arraybuffer' })
+          .then((res) => {
+            let xlsx_data = new Uint8Array(res.data);
+            let excelData = XLSX.read(xlsx_data, { type: "array", cellText: false, cellDates: true });
+            let jsonData = Object.keys(excelData.Sheets).map(name => ({
+              name,
+              data: XLSX.utils.sheet_to_json(excelData.Sheets[name], {header: 0, raw: true, dateNF: 'yyyy/mm/dd' }),
+            }));
+            this.allData = jsonData[0].data;
+          }).catch(err => {
+            this.err = err
+          })
+      },
+      computed: {
+        growingSort: function () {
+          let setData;
+          setData = this.allData.filter(item =>{
+            return item.className === 'growing'
+          })
+          setData = setData.sort((a, b) => {
+            return new Date(a.classDate) - new Date(b.classDate);
+          });
+          return setData;
+        },
+        sharingSort: function () {
+          let setData,
+              OnLine,
+              Local;
+          setData = this.allData.filter(item =>{
+            return item.className === 'sharing'
+          })
+          OnLine = setData.filter(item =>{
+            return item.classType === '線上直播';
+          }).sort((a, b) => {
+            return new Date(a.classDate) - new Date(b.classDate);
+          });
+          Local = setData.filter(item =>{
+            return item.classType === '實體現場';
+          }).sort((a, b) => {
+            return new Date(a.classDate) - new Date(b.classDate);
+          }).sort((a, b) => {
+            let aNum = a.Address.substr(0, 2),
+                bNum = b.Address.substr(0, 2);
+            console.log('aNum:', aNum);
+            console.log('bNum:', bNum);
+            return aNum - bNum;
+          });
+          return  {onlineData: OnLine,localData:Local};
+        },
+      },
+      filters: {
+        convertToChineseDay: function (day) {
+          const theDay = new Date(day);
+          const getDay = theDay.getDay();
+          const getDate = theDay.getDate();
+          const getMonth = theDay.getMonth() + 1;
+          const chineseDay = ["日", "一", "二", "三", "四", "五", "六"];
+          if (isNaN(getDay)) {
+            return day;
+          }
+          return `${getMonth}月${getDate}日 (${chineseDay[getDay]})`;
+        },
+      },
+    })
+  </script>
+</body>
+
+</html>
