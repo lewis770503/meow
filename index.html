@@ -18,35 +18,37 @@
     </div>
     <div class="warp">
       <h1 id="grow">成長</h1>
-      <div v-for="(item,index) in growingSort" :key="'growing-' + index" class="item">
+      <div v-for="(item,index) in growingSort" :key="'growing-' + index" class="classItem">
         &#128142;【今日{{item.classDate}}】幸福學苑課程<br>
-        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
-        <p v-if="item.Lesson === '每月固定課程'">每月固定課程</p>
-        <p v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}</p>
-        <p v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}</p>
-        <p>地點：{{item.Address}}</p>
-        <p v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></p>
+        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
+        <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
+        <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
+        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
+        <span>地點：{{item.Address}}<br></span>
+        <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        
+        
       </div>
       <h1 id="share">分享</h1>
       <h2>線上分享會</h2>
-      <div v-for="(item,index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="item">
+      <div v-for="(item, index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="classItem">
         &#128142;【今日{{item.classDate}}】線上分享會<br>
-        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
-        <p v-if="item.Lesson === '每月固定課程'">每月固定課程</p>
-        <p v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}</p>
-        <p v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}</p>
-        <p>地點：{{item.Address}}</p>
-        <p v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></p>
+        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
+        <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
+        <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
+        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
+        <span>地點：{{item.Address}}<br></span>
+        <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
       </div>
       <h2>實體分享會</h2>
-      <div v-for="(item,index) in sharingSort.localData" :key="'sharing-local-' + index" class="item">
+      <div v-for="(item, index) in sharingSort.localData" :key="'sharing-local-' + index" class="classItem">
         &#128142;【今日{{item.classDate}}】實體分享會<br>
-        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
-        <p v-if="item.Lesson === '每月固定課程'">每月固定課程</p>
-        <p v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}</p>
-        <p v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}</p>
-        <p>地點：{{item.Address}}</p>
-        <p v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></p>
+        &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
+        <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
+        <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
+        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
+        <span>地點：{{item.Address}}<br></span>
+        <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
       </div>
     </div>
 
@@ -65,7 +67,6 @@
         return {
           allData: [],
           err: "",
-          newUrl: [],
         }
       },
       created() {
@@ -84,7 +85,7 @@
           })
       },
       computed: {
-        growingSort: function () {
+        growingSort() {
           let setData;
           setData = this.allData.filter(item => {
             return item.className === 'growing'
@@ -94,7 +95,7 @@
           });
           return setData;
         },
-        sharingSort: function () {
+        sharingSort () {
           let setData,
             OnLine,
             Local;
@@ -121,10 +122,13 @@
       methods: {
         getTinyUrl(url) {
           let apiUrl = `https://api.shrtco.de/v2/shorten?url=${url}`;
+          // console.log('apiUrl:', apiUrl , typeof apiUrl);
           axios.get(apiUrl).then((res) => {
             console.log('res.data.result.full_short_link2:', res.data.result.full_short_link2)
+            return res.data.result.full_short_link2;
           }).catch(err => {
-            console.log('err:', err)
+            return url;
+            // return url;
           })
         },
       },
@@ -137,15 +141,6 @@
       //       return day;
       //     }
       //     return `(${chineseDay[getDay]})`;
-      //   },
-      //   convertDate: function (day) {
-      //     const theDay = new Date(day);
-      //     const getDate = theDay.getDate();
-      //     const getMonth = theDay.getMonth() + 1;
-      //     if (isNaN(getMonth)) {
-      //       return day;
-      //     }
-      //     return `${getMonth}/${getDate}`;
       //   },
       // },
     })
