@@ -16,40 +16,46 @@
       <a href="#grow" class="btn">成長</a>
       <a href="#share" class="btn">分享</a>
     </div>
+    <select name="" id="" v-model="dateSelect">
+      <option v-for="(item,idx) in filterDate" :key="'date-'+idx" :value="item">{{item}}</option>
+    </select>
     <div class="warp">
-      <h1 id="grow">成長</h1>
-      <div v-for="(item,index) in growingSort" :key="'growing-' + index" class="classItem">
-        &#128142;【今日{{item.classDate}}】幸福學苑課程<br>
+      <h1 id="grow" v-show="growingSort.length !== 0">幸福學苑喵喵團隊專屬學習成長營</h1>
+      <p v-if="growingSort.length !== 0" class="typeTitle">
+        &#128142;【幸福學苑社團-{{growingSort[0].classDate}} <span v-if="growingSort[0].classDay">({{growingSort[0].classDay}})</span> 課程】 
+      </p>
+      <p v-for="(item,index) in growingSort" :key="'growing-' + index" class="classItem">
         &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
         <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
         <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
         <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
         <span>地點：{{item.Address}}<br></span>
         <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
-        
-        
-      </div>
-      <h1 id="share">分享</h1>
-      <h2>線上分享會</h2>
-      <div v-for="(item, index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="classItem">
-        &#128142;【今日{{item.classDate}}】線上分享會<br>
+      </p>
+      <h1 v-show="sharingSort.onlineData.length !== 0">喵喵團隊線上分享會</h1>
+      <p v-if="sharingSort.onlineData.length !== 0" class="typeTitle">
+        &#128142;【線上分享會-{{sharingSort.onlineData[0].classDate}} <span v-if="sharingSort.onlineData[0].classDay">({{sharingSort.onlineData[0].classDay}})</span> 課程】 
+      </p>
+      <p v-for="(item, index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="classItem">
         &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
         <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
         <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
         <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
         <span>地點：{{item.Address}}<br></span>
         <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
-      </div>
-      <h2>實體分享會</h2>
-      <div v-for="(item, index) in sharingSort.localData" :key="'sharing-local-' + index" class="classItem">
-        &#128142;【今日{{item.classDate}}】實體分享會<br>
+      </p>
+      <h1 v-show="sharingSort.localData.length !== 0">喵喵團隊實體分享會</h1>
+      <p v-if="sharingSort.localData.length !== 0" class="typeTitle">
+        &#128142;【線上分享會-{{sharingSort.localData[0].classDate}} <span v-if="sharingSort.localData[0].classDay">({{sharingSort.localData[0].classDay}})</span> 課程】 
+      </p>
+      <p v-for="(item, index) in sharingSort.localData" :key="'sharing-local-' + index" class="classItem">
         &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
         <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
         <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
         <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
         <span>地點：{{item.Address}}<br></span>
         <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
-      </div>
+      </p>
     </div>
 
   </div>
@@ -60,91 +66,7 @@
     integrity='sha512-rozBdNtS7jw9BlC76YF1FQGjz17qQ0J/Vu9ZCFIW374sEy4EZRbRcUZa2RU/MZ90X2mnLU56F75VfdToGV0RiA=='
     crossorigin='anonymous'></script>
   <script src="js/xlsx.js"></script>
-  <script>
-    var app = new Vue({
-      el: '#app',
-      data() {
-        return {
-          allData: [],
-          err: "",
-        }
-      },
-      created() {
-        var url = "./file/learn.xlsx"
-        axios.get(url, { responseType: 'arraybuffer' })
-          .then((res) => {
-            let xlsx_data = new Uint8Array(res.data);
-            let excelData = XLSX.read(xlsx_data, { type: "array", cellText: false, cellDates: true });
-            let jsonData = Object.keys(excelData.Sheets).map(name => ({
-              name,
-              data: XLSX.utils.sheet_to_json(excelData.Sheets[name], { header: 0, raw: false, dateNF: 'm/d' }),
-            }));
-            this.allData = jsonData[0].data;
-          }).catch(err => {
-            this.err = err
-          })
-      },
-      computed: {
-        growingSort() {
-          let setData;
-          setData = this.allData.filter(item => {
-            return item.className === 'growing'
-          })
-          setData = setData.sort((a, b) => {
-            return new Date(a.classDate) - new Date(b.classDate);
-          });
-          return setData;
-        },
-        sharingSort () {
-          let setData,
-            OnLine,
-            Local;
-          setData = this.allData.filter(item => {
-            return item.className === 'sharing'
-          })
-          OnLine = setData.filter(item => {
-            return item.classType === '線上直播';
-          }).sort((a, b) => {
-            return new Date(a.classDate) - new Date(b.classDate);
-          });
-          Local = setData.filter(item => {
-            return item.classType === '實體現場';
-          }).sort((a, b) => {
-            return new Date(a.classDate) - new Date(b.classDate);
-          }).sort((a, b) => {
-            let aNum = a.Address.substr(0, 2),
-              bNum = b.Address.substr(0, 2);
-            return aNum - bNum;
-          });
-          return { onlineData: OnLine, localData: Local };
-        },
-      },
-      methods: {
-        getTinyUrl(url) {
-          let apiUrl = `https://api.shrtco.de/v2/shorten?url=${url}`;
-          // console.log('apiUrl:', apiUrl , typeof apiUrl);
-          axios.get(apiUrl).then((res) => {
-            console.log('res.data.result.full_short_link2:', res.data.result.full_short_link2)
-            return res.data.result.full_short_link2;
-          }).catch(err => {
-            return url;
-            // return url;
-          })
-        },
-      },
-      // filters: {
-      //   convertToChineseDay: function (day) {
-      //     const theDay = new Date(day);
-      //     const getDay = theDay.getDay();
-      //     const chineseDay = ["日", "一", "二", "三", "四", "五", "六"];
-      //     if (isNaN(getDay)) {
-      //       return day;
-      //     }
-      //     return `(${chineseDay[getDay]})`;
-      //   },
-      // },
-    })
-  </script>
+  <script src="js/index.js"></script>
 </body>
 
 </html>
