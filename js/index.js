@@ -7,6 +7,7 @@ var app = new Vue({
 			dateData: [],
 			dateSelect: '',
 			filterData: [],
+			tagCheck: true,
 		};
 	},
 	created() {
@@ -88,7 +89,7 @@ var app = new Vue({
 			axios
 				.get(apiUrl)
 				.then((res) => {
-					console.log('res.data.result.full_short_link2:', res.data.result.full_short_link2);
+					// console.log('res.data.result.full_short_link2:', res.data.result.full_short_link2);
 					return res.data.result.full_short_link2;
 				})
 				.catch((err) => {
@@ -110,7 +111,7 @@ var app = new Vue({
 	// },
 	watch: {
 		dateSelect(newValue, oldValue) {
-			console.log('newValue, oldValue:', newValue, oldValue);
+			// console.log('newValue, oldValue:', newValue, oldValue);
 			let data = this.allData.filter((item) => {
 				// console.log('item:', item);
 				return item.classDate === this.dateSelect;

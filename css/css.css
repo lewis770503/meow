@@ -36,3 +36,32 @@ h2{
 .classItem{
   margin-bottom: 30px;
 }
+.tag{
+  display: inline-block;
+  margin: 5px 5px 0 0;
+  padding: 3px 10px;
+  font-size: 14px;
+  border-radius: 5px;
+  color: #fff;
+}
+.tag--check{
+  background-color: rgb(143, 0, 36);
+}
+.tag--class{
+  background-color: rgb(0, 82, 158);
+}
+.tag--Lesson{
+  background-color: rgb(60, 0, 172);
+}
+.tag--classType{
+  background-color: rgb(0, 121, 36);
+}
+.checkbox{
+  width: 20px;
+  height: 20px;
+  margin: 0 3px 0 10px;
+  border: 1px solid #eee;
+  background-color: #fff;
+  display: inline-block;
+  vertical-align: text-bottom;
+}

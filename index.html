@@ -13,48 +13,65 @@
 <body>
   <div id="app">
     <div class="nav flex">
-      <a href="#grow" class="btn">成長</a>
-      <a href="#share" class="btn">分享</a>
+      <span>請選擇日期：</span><select name="" id="" v-model="dateSelect">
+        <option v-for="(item,idx) in filterDate" :key="'date-'+idx" :value="item">{{item}}</option>
+      </select>
+      <label>
+        <input v-model="tagCheck" type="checkbox" class="checkbox" />
+        顯示標籤
+      </label>
     </div>
-    <select name="" id="" v-model="dateSelect">
-      <option v-for="(item,idx) in filterDate" :key="'date-'+idx" :value="item">{{item}}</option>
-    </select>
     <div class="warp">
-      <h1 id="grow" v-show="growingSort.length !== 0">幸福學苑喵喵團隊專屬學習成長營</h1>
-      <p v-if="growingSort.length !== 0" class="typeTitle">
-        &#128142;【幸福學苑社團-{{growingSort[0].classDate}} <span v-if="growingSort[0].classDay">({{growingSort[0].classDay}})</span> 課程】 
+      <h1 id="grow" v-show="growingSort.length > 0">幸福學苑喵喵團隊專屬學習成長營</h1>
+      <p v-if="growingSort.length > 0" class="typeTitle">
+        &#128142;【幸福學苑社團-{{growingSort[0].classDate}} <span
+          v-if="growingSort[0].classDay">({{growingSort[0].classDay}})</span> 課程】
       </p>
       <p v-for="(item,index) in growingSort" :key="'growing-' + index" class="classItem">
         &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
         <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
         <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
-        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
+        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay +
+          ')'}}&nbsp;{{item.classTime}}<br></span>
         <span>地點：{{item.Address}}<br></span>
-        <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a><br></span>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
       </p>
-      <h1 v-show="sharingSort.onlineData.length !== 0">喵喵團隊線上分享會</h1>
-      <p v-if="sharingSort.onlineData.length !== 0" class="typeTitle">
-        &#128142;【線上分享會-{{sharingSort.onlineData[0].classDate}} <span v-if="sharingSort.onlineData[0].classDay">({{sharingSort.onlineData[0].classDay}})</span> 課程】 
+      <h1 v-show="sharingSort.onlineData.length > 0">喵喵團隊線上分享會</h1>
+      <p v-if="sharingSort.onlineData.length > 0" class="typeTitle">
+        &#128142;【線上分享會-{{sharingSort.onlineData[0].classDate}} <span
+          v-if="sharingSort.onlineData[0].classDay">({{sharingSort.onlineData[0].classDay}})</span> 課程】
       </p>
       <p v-for="(item, index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="classItem">
         &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
         <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
         <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
-        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
+        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay +
+          ')'}}&nbsp;{{item.classTime}}<br></span>
         <span>地點：{{item.Address}}<br></span>
         <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
       </p>
-      <h1 v-show="sharingSort.localData.length !== 0">喵喵團隊實體分享會</h1>
-      <p v-if="sharingSort.localData.length !== 0" class="typeTitle">
-        &#128142;【線上分享會-{{sharingSort.localData[0].classDate}} <span v-if="sharingSort.localData[0].classDay">({{sharingSort.localData[0].classDay}})</span> 課程】 
+      <h1 v-show="sharingSort.localData.length > 0">喵喵團隊實體分享會</h1>
+      <p v-if="sharingSort.localData.length > 0" class="typeTitle">
+        &#128142;【實體分享會-{{sharingSort.localData[0].classDate}} <span
+          v-if="sharingSort.localData[0].classDay">({{sharingSort.localData[0].classDay}})</span> 課程】
       </p>
       <p v-for="(item, index) in sharingSort.localData" :key="'sharing-local-' + index" class="classItem">
         &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}<br></span>
         <span v-if="item.Lesson === '每月固定課程'">每月固定課程<br></span>
         <span v-if="item.Lesson === '每周固定課程'">每週{{item.classDay}}&nbsp;{{item.classTime}}<br></span>
-        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay + ')'}}&nbsp;{{item.classTime}}<br></span>
+        <span v-if="item.Lesson === '單堂'">{{item.classDate +'(' + item.classDay +
+          ')'}}&nbsp;{{item.classTime}}<br></span>
         <span>地點：{{item.Address}}<br></span>
         <span v-if="item.Url">報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
       </p>
     </div>
 
