@@ -36,7 +36,7 @@ var app = new Vue({
 	computed: {
 		growingSort() {
 			let setData;
-			setData = this.filterData
+			setData = this.allData
 				.filter((item) => {
 					return item.className === 'growing';
 				})
@@ -44,12 +44,16 @@ var app = new Vue({
 					let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
 						bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
 					return aNum - bNum;
+				})
+				.sort((a, b) => {
+					return new Date(a.classDate) - new Date(b.classDate);
 				});
+
 			return setData;
 		},
 		sharingSort() {
 			let setData, OnLine, Local;
-			setData = this.filterData.filter((item) => {
+			setData = this.allData.filter((item) => {
 				return item.className === 'sharing';
 			});
 			OnLine = setData
@@ -60,6 +64,9 @@ var app = new Vue({
 					let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
 						bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
 					return aNum - bNum;
+				})
+				.sort((a, b) => {
+					return new Date(a.classDate) - new Date(b.classDate);
 				});
 			Local = setData
 				.filter((item) => {
@@ -69,6 +76,9 @@ var app = new Vue({
 					let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
 						bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
 					return aNum - bNum;
+				})
+				.sort((a, b) => {
+					return new Date(a.classDate) - new Date(b.classDate);
 				})
 				.sort((a, b) => {
 					let aNum = a.Address.substr(0, 2),
@@ -86,6 +96,13 @@ var app = new Vue({
 				return new Date(a) - new Date(b);
 			});
 			return sortData;
+		},
+		allDayLesson() {
+			let allDay = this.allData.filter((item) => {
+				console.log('item:', item);
+				return item.classDay === '每天';
+			});
+			return allDay;
 		},
 	},
 	methods: {

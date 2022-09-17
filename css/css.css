@@ -1,8 +1,19 @@
+body{
+  font-family: '微軟正黑體';
+  line-height: 2em;
+}
+.big-title{
+  width: 100%;
+  padding-top: 20px;
+  text-align: center;
+  font-size: 40px;
+}
 h1{
-  padding: 20px 0;
-  font-size: 20px;
-  line-height: 40px;
+  display: inline;
+  font-size: 12pt;
+  line-height: 1.15em;
   font-weight: 700;
+  background-color: #ff0;
 }
 h2{
   padding: 20px 0;
@@ -24,7 +35,10 @@ h2{
   justify-content: center;
 }
 .typeTitle{
-  font-weight: 700;
+  
+}
+.typeTitle-bg{
+  background-color: #0f0;
 }
 .btn{
   margin: 0 10px;
@@ -34,7 +48,7 @@ h2{
   text-decoration: none;
 }
 .classItem{
-  margin-bottom: 30px;
+  width: 100%;
 }
 .tag{
   display: inline-block;
@@ -65,3 +79,4 @@ h2{
   display: inline-block;
   vertical-align: text-bottom;
 }
+.nav-btn{display: inline-block; margin-left: 10px; padding: 2px 5px; background-color: rgb(88, 64, 154); color: #fff; border-radius: 3px;}

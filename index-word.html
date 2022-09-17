@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/css.css">
+</head>
+
+<body>
+  <div id="app">
+    <div class="big-title">Word 版</div>
+    <div class="nav flex">
+      <label>
+        <input v-model="tagCheck" type="checkbox" class="checkbox" />
+        顯示標籤
+      </label>
+      <a href="index-word.html" class="nav-btn">網頁版</a>
+    </div>
+    <div class="warp">
+      <h1> 一、月份幸福學苑喵喵團隊專屬學習成長營</h1><br>
+      <span class="typeTitle typeTitle-bg">【幸福學苑-每月固定課程】<br></span>
+      <div v-for="(item,index) in growingSort" :key="'growing-' + index" class="classItem">
+        <span class="typeTitle typeTitle-bg" v-if="item.Lesson !== '每月固定課程' && item.classDate !== growingSort[index-1].classDate">
+          【幸福學苑社團- {{item.classDate}} (四)課程】<br>
+        </span>
+        &#10084;&#65039;<span v-if="item.Lesson === '每月固定課程'">(專屬社團進行)</span><span v-if="item.class"><span v-if="item.class.substr(0, 2) === '必修'">必修課-</span><span
+            v-if="item.class.substr(0, 2) === '孕產'">孕產親子課-</span></span>{{item.Title}}<span v-if="item.Teacher && item.Lesson !== '每月固定課程'">/{{item.Teacher}}</span>
+        <span v-if="item.Teacher && item.Lesson === '每月固定課程'"><br>講者：{{item.Teacher}}</span>
+        <span v-if="item.Lesson === '每月固定課程'"><br>{{item.classDate}}</span>
+        <span v-if="item.Lesson === '每周固定課程'"><br>{{item.classTime}}</span>
+        <span v-if="item.Lesson === '單堂'"><br>{{item.classTime === '採預約制' ? '採預約制 (' + item.Address + ')' :
+          item.classTime}}</span>
+        <span v-if="item.classType === '實體現場'"><br>實體課程:{{item.Address}}</span>
+        <span v-if="item.Url"><br>報名 <a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        <div v-if="tagCheck && item.Check">
+          <span class="tag tag--check">{{item.Check}}</span>
+        </div>
+        <br>
+        <div v-if="item.Lesson !== '每月固定課程' && index+1<growingSort.length && item.classDate !== growingSort[index+1].classDate">
+          <br>&#10084;&#65039;{{allDayLesson[0].Title + '/' + allDayLesson[0].Teacher}}
+            <span v-if="item.Lesson === '單堂'"><br>{{allDayLesson[0].classTime === '採預約制' ? '採預約制 (' + allDayLesson[0].Address + ')' :
+              allDayLesson[0].classTime}}</span>
+            <span v-if="allDayLesson[0].classType === '實體現場'"><br>實體課程:{{allDayLesson[0].Address}}</span>
+            <span v-if="allDayLesson[0].Url"><br>報名 <a :href="allDayLesson[0].Url" target="_blank">{{allDayLesson[0].Url}}</a></span>
+            <div v-if="tagCheck && allDayLesson[0].Check">
+              <span class="tag tag--check">{{allDayLesson[0].Check}}</span>
+            </div>
+        </div>
+        <br>
+      </div>
+      <div>
+        &#10084;&#65039;{{allDayLesson[0].Title + '/' + allDayLesson[0].Teacher}}
+            <span><br>{{allDayLesson[0].classTime === '採預約制' ? '採預約制 (' + allDayLesson[0].Address + ')' :
+              allDayLesson[0].classTime}}</span>
+            <span v-if="allDayLesson[0].classType === '實體現場'"><br>實體課程:{{allDayLesson[0].Address}}</span>
+            <span v-if="allDayLesson[0].Url"><br>報名 <a :href="allDayLesson[0].Url" target="_blank">{{allDayLesson[0].Url}}</a></span>
+      </div>
+      <br>
+      <h1>二、月份喵喵團隊線上分享會</h1><br>
+      <div v-for="(item, index) in sharingSort.onlineData" :key="'sharing-online-' + index" class="classItem">
+        &#10084;&#65039;{{item.Title}}<span v-if="item.Teacher">{{"/" + item.Teacher}}</span>
+        <span v-if="item.Lesson === '每周固定課程'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}} ({{item.Address.slice(2)}})</span>
+        <span v-if="item.Lesson === '單堂'"><br>{{item.classDate}}({{item.classDay}}) {{item.classTime}} ({{item.Address.slice(2)}})</span>
+        <span v-if="item.Url"><br>報名 <a :href="item.Url" target="_blank">{{item.Url}}</a></span><br>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
+        <br>
+      </div>
+      <h1>三、月份喵喵團隊實體分享會</h1><br>
+      <span  class="typeTitle typeTitle-bg">【喵喵團隊實體分享會-台北】</span>
+      <div v-for="(item, index) in sharingSort.localData" :key="'sharing-local-' + index" class="classItem">
+        <div v-if="item.classType === '實體現場' && index > 1">
+          <span  class="typeTitle typeTitle-bg" v-if="item.Address.substr(2, 2) !== sharingSort.localData[index-1].Address.substr(2, 2)">【喵喵團隊實體分享會-{{item.Address.substr(2, 2)}}】</span>
+        </div>
+        &#10084;&#65039;{{item.Title}}<span v-if="item.Teacher">{{"/" + item.Teacher}}</span>
+        <span v-if="item.Lesson === '每周固定課程'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}} ({{item.Address.slice(2)}})</span>
+        <span v-if="item.Lesson === '單堂'"><br>{{item.classDate}}({{item.classDay}}) {{item.classTime}}</span>
+        <span v-if="item.classType === '實體現場'"><br>實體課地點:{{item.Address.slice(2)}}</span>
+        <span v-if="item.Url"><br>報名 <a :href="item.Url" target="_blank">{{item.Url}}</a></span><br>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
+        <br>
+      </div>
+    </div>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.js'
+    integrity='sha512-rozBdNtS7jw9BlC76YF1FQGjz17qQ0J/Vu9ZCFIW374sEy4EZRbRcUZa2RU/MZ90X2mnLU56F75VfdToGV0RiA=='
+    crossorigin='anonymous'></script>
+  <script src="js/xlsx.js"></script>
+  <script src="js/index-word.js"></script>
+</body>
+
+</html>
