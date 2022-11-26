@@ -11,7 +11,7 @@ var app = new Vue({
 		};
 	},
 	created() {
-		var url = './file/learn.xlsx';
+		var url = './file/learn10.xlsx';
 		axios
 			.get(url, { responseType: 'arraybuffer' })
 			.then((res) => {
@@ -99,7 +99,7 @@ var app = new Vue({
 		},
 		allDayLesson() {
 			let allDay = this.allData.filter((item) => {
-				console.log('item:', item);
+				// console.log('item:', item);
 				return item.classDay === '每天';
 			});
 			return allDay;

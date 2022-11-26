@@ -11,7 +11,7 @@ var app = new Vue({
 		};
 	},
 	created() {
-		var url = './file/learn.xlsx';
+		var url = './file/learn10.xlsx';
 		axios
 			.get(url, { responseType: 'arraybuffer' })
 			.then((res) => {
