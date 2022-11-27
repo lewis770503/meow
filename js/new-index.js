@@ -97,22 +97,26 @@ var app = new Vue({
 			for (let i = 0; i < this.dateData.length; i++) {
 				let _classDay = this.dateData[i].dfDay,
 					_classDate = this.dateData[i].dfDate;
-				for (let j = 0; j < this.everyDay.growing.length; j++) {
-					let _everyDay;
-					_everyDay = Object.assign({}, this.everyDay.growing[j]);
-					_everyDay.classDate = _classDate;
-					_everyDay.classDay = _classDay;
-					growingNewData = growingNewData.concat(_everyDay);
+				if (this.everyDay.growing.length > 0) {
+					for (let j = 0; j < this.everyDay.growing.length; j++) {
+						let _everyDay;
+						_everyDay = Object.assign({}, this.everyDay.growing[j]);
+						_everyDay.classDate = _classDate;
+						_everyDay.classDay = _classDay;
+						growingNewData = growingNewData.concat(_everyDay);
+					}
 				}
-				for (let k = 0; k < this.weekClass.growing.length; k++) {
-					let _weekDay = this.weekClass.growing[k].classDay,
-						_weekDate = this.weekClass.growing[k].classDate;
-					if (_weekDay.indexOf(_classDay) >= 0 && _classDate !== _weekDate) {
-						let _weekDay;
-						_weekDay = Object.assign({}, this.weekClass.growing[k]);
-						_weekDay.classDate = _classDate;
-						_weekDay.classDay = _classDay;
-						growingNewData = growingNewData.concat(_weekDay);
+				if (this.weekClass.growing.length > 0) {
+					for (let k = 0; k < this.weekClass.growing.length; k++) {
+						let _weekDay = this.weekClass.growing[k].classDay,
+							_weekDate = this.weekClass.growing[k].classDate;
+						if (_weekDay.indexOf(_classDay) >= 0 && _classDate !== _weekDate) {
+							let _weekDay;
+							_weekDay = Object.assign({}, this.weekClass.growing[k]);
+							_weekDay.classDate = _classDate;
+							_weekDay.classDay = _classDay;
+							growingNewData = growingNewData.concat(_weekDay);
+						}
 					}
 				}
 			}
@@ -132,7 +136,7 @@ var app = new Vue({
 		sharingSort() {
 			let setData, OnLine, Local;
 			setData = this.allData.filter((item) => {
-				return item.className === 'sharing';
+				return item.className === 'sharing' && item.Lesson !== '每周固定課程' && item.classDay !== '每天';
 			});
 			OnLine = setData
 				.filter((item) => {
@@ -165,39 +169,41 @@ var app = new Vue({
 			for (let i = 0; i < this.dateData.length; i++) {
 				let _classDay = this.dateData[i].dfDay,
 					_classDate = this.dateData[i].dfDate;
-				// if (this.everyDay.online.length > 0) {
-				// 	for (let j = 0; j < this.everyDay.online.length; j++) {
-				// 		let _everyDay;
-				// 		_everyDay = Object.assign({}, this.everyDay.online[j]);
-				// 		_everyDay.classDate = _classDate;
-				// 		_everyDay.classDay = _classDay;
-				// 		onlineNewData = onlineNewData.concat(_everyDay);
-				// 	}
-				// }
+				if (this.everyDay.online.length > 0) {
+					for (let j = 0; j < this.everyDay.online.length; j++) {
+						let _everyDay;
+						_everyDay = Object.assign({}, this.everyDay.online[j]);
+						_everyDay.classDate = _classDate;
+						_everyDay.classDay = _classDay;
+						onlineNewData = onlineNewData.concat(_everyDay);
+					}
+				}
 
-				// for (let k = 0; k < this.weekClass.online.length; k++) {
-				// 	let _weekDay = this.weekClass.online[k].classDay,
-				// 		_weekDate = this.weekClass.online[k].classDate;
-				// 	if (_weekDay.indexOf(_classDay) >= 0 && _classDate !== _weekDate) {
-				// 		let _weekDay;
-				// 		_weekDay = Object.assign({}, this.weekClass.online[k]);
-				// 		_weekDay.classDate = _classDate;
-				// 		_weekDay.classDay = _classDay;
-				// 		onlineNewData = onlineNewData.concat(_weekDay);
-				// 	}
-				// }
+				if (this.weekClass.online.length > 0) {
+					for (let k = 0; k < this.weekClass.online.length; k++) {
+						let _weekDay = this.weekClass.online[k].classDay,
+							_weekDate = this.weekClass.online[k].classDate;
+						if (_weekDay.indexOf(_classDay) >= 0 && _classDate !== _weekDate) {
+							let _weekDay;
+							_weekDay = Object.assign({}, this.weekClass.online[k]);
+							_weekDay.classDate = _classDate;
+							_weekDay.classDay = _classDay;
+							onlineNewData = onlineNewData.concat(_weekDay);
+						}
+					}
+				}
 			}
 			onlineNewData = onlineNewData.concat(this.sharingSort.onlineData);
-			// onlineNewData = [...new Set(onlineNewData.map((item) => JSON.stringify(item)))].map((item) => JSON.parse(item));
-			// onlineNewData
-			// 	.sort((a, b) => {
-			// 		let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
-			// 			bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
-			// 		return aNum - bNum;
-			// 	})
-			// 	.sort((a, b) => {
-			// 		return new Date(a.classDate) - new Date(b.classDate);
-			// 	});
+			onlineNewData = [...new Set(onlineNewData.map((item) => JSON.stringify(item)))].map((item) => JSON.parse(item));
+			onlineNewData
+				.sort((a, b) => {
+					let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
+						bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
+					return aNum - bNum;
+				})
+				.sort((a, b) => {
+					return new Date(a.classDate) - new Date(b.classDate);
+				});
 			return onlineNewData;
 		},
 	},
