@@ -69,17 +69,21 @@ var app = new Vue({
 			return { growing: growingData, local: localData, online: onlineData };
 		},
 		weekClass() {
-			let setData;
-			setData = this.allData.filter((item) => {
-				return item.className === 'growing' && item.Lesson === '每周固定課程';
+			let growingData, localData, onlineData;
+			const set = new Set();
+			growingData = this.allData.filter((item, index, arr) => {
+				return item.className === 'growing' && item.Lesson === '每周固定課程' && item.classDay !== '每天';
 			});
+			growingData = growingData.filter((item) => (!(set.has(item.Title) && set.has(item.classDay)) ? set.add(item.Title) && set.add(item.classDay) : false));
 			localData = this.allData.filter((item) => {
-				return item.className === 'sharing' && item.classType === '實體現場' && item.Lesson === '每周固定課程';
+				return item.className === 'sharing' && item.classType === '實體現場' && item.Lesson === '每周固定課程' && item.classDay !== '每天';
 			});
+			localData = localData.filter((item) => (!(set.has(item.Title) && set.has(item.classDay)) ? set.add(item.Title) && set.add(item.classDay) : false));
 			onlineData = this.allData.filter((item) => {
-				return item.className === 'sharing' && item.classType === '線上直播' && item.Lesson === '每周固定課程';
+				return item.className === 'sharing' && item.classType === '線上直播' && item.Lesson === '每周固定課程' && item.classDay !== '每天';
 			});
-			return { growing: setData, local: localData, online: onlineData };
+			onlineData = onlineData.filter((item) => (!(set.has(item.Title) && set.has(item.classDay)) ? set.add(item.Title) && set.add(item.classDay) : false));
+			return { growing: growingData, local: localData, online: onlineData };
 		},
 		growingFilter() {
 			let setData;
@@ -89,8 +93,7 @@ var app = new Vue({
 			return setData;
 		},
 		growingClass() {
-			let growingNewData = [],
-				nowDate = '';
+			let growingNewData = [];
 			for (let i = 0; i < this.dateData.length; i++) {
 				let _classDay = this.dateData[i].dfDay,
 					_classDate = this.dateData[i].dfDate;
@@ -101,28 +104,20 @@ var app = new Vue({
 					_everyDay.classDay = _classDay;
 					growingNewData = growingNewData.concat(_everyDay);
 				}
-				growingNewData = growingNewData.concat(this.growingFilter[i]);
-			}
-
-			for (let i = 0; i < this.dateData.length; i++) {
-				let _classDay = this.dateData[i].dfDay,
-					_classDate = this.dateData[i].dfDate;
 				for (let k = 0; k < this.weekClass.growing.length; k++) {
-					let _growingDate = new Date(this.dateData[i].classDate),
-						_weekDate = new Date(this.weekClass.growing[k].classDate);
-					if (_classDay.indexOf(this.weekClass.growing[k].classDay) >= 0) {
-						console.log(this.weekClass.growing[k]);
+					let _weekDay = this.weekClass.growing[k].classDay,
+						_weekDate = this.weekClass.growing[k].classDate;
+					if (_weekDay.indexOf(_classDay) >= 0 && _classDate !== _weekDate) {
+						let _weekDay;
+						_weekDay = Object.assign({}, this.weekClass.growing[k]);
+						_weekDay.classDate = _classDate;
+						_weekDay.classDay = _classDay;
+						growingNewData = growingNewData.concat(_weekDay);
 					}
-
-					// if (_classDay.indexOf(this.weekClass.growing[k].classDay) >= 0 && this.growingNewData[i].Title !== this.weekClass[k].Title) {
-					// let _weekDay;
-					// _weekDay = Object.assign({}, this.weekDay.growing[k]);
-					// _weekDay.classDate = _classDate;
-					// _weekDay.classDay = _classDay;
-					growingNewData = growingNewData.concat(this.weekClass.growing[k]);
-					// }
 				}
 			}
+			growingNewData = growingNewData.concat(this.growingFilter);
+			growingNewData = [...new Set(growingNewData.map((item) => JSON.stringify(item)))].map((item) => JSON.parse(item));
 			growingNewData
 				.sort((a, b) => {
 					let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
@@ -166,37 +161,43 @@ var app = new Vue({
 			return { onlineData: OnLine, localData: Local };
 		},
 		onlineClass() {
-			let onlineNewData = [],
-				nowDate = '';
-			for (let i = 0; i < this.sharingSort.onlineData.length; i++) {
-				let _classDay = this.sharingSort.onlineData[i].classDay,
-					_classDate = this.sharingSort.onlineData[i].classDate;
-				for (let k = 0; k < this.monthClass.length; k++) {
-					if (_classDay.indexOf(this.monthClass[k].dfDay) >= 0 && this.sharingSort.onlineData[i].Title !== this.monthClass[k].Title) {
-						onlineNewData = onlineNewData.concat(this.monthClass[k]);
-					}
-				}
-				if (nowDate !== _classDate) {
-					for (let j = 0; j < this.everyDay.online.length; j++) {
-						let _everyDay;
-						_everyDay = Object.assign({}, this.everyDay.online[j]);
-						_everyDay.classDate = _classDate;
-						_everyDay.classDay = _classDay;
-						onlineNewData = onlineNewData.concat(_everyDay);
-					}
-					nowDate = _classDate;
-				}
-				onlineNewData = onlineNewData.concat(this.growingFilter[i]);
+			let onlineNewData = [];
+			for (let i = 0; i < this.dateData.length; i++) {
+				let _classDay = this.dateData[i].dfDay,
+					_classDate = this.dateData[i].dfDate;
+				// if (this.everyDay.online.length > 0) {
+				// 	for (let j = 0; j < this.everyDay.online.length; j++) {
+				// 		let _everyDay;
+				// 		_everyDay = Object.assign({}, this.everyDay.online[j]);
+				// 		_everyDay.classDate = _classDate;
+				// 		_everyDay.classDay = _classDay;
+				// 		onlineNewData = onlineNewData.concat(_everyDay);
+				// 	}
+				// }
+
+				// for (let k = 0; k < this.weekClass.online.length; k++) {
+				// 	let _weekDay = this.weekClass.online[k].classDay,
+				// 		_weekDate = this.weekClass.online[k].classDate;
+				// 	if (_weekDay.indexOf(_classDay) >= 0 && _classDate !== _weekDate) {
+				// 		let _weekDay;
+				// 		_weekDay = Object.assign({}, this.weekClass.online[k]);
+				// 		_weekDay.classDate = _classDate;
+				// 		_weekDay.classDay = _classDay;
+				// 		onlineNewData = onlineNewData.concat(_weekDay);
+				// 	}
+				// }
 			}
-			onlineNewData
-				.sort((a, b) => {
-					let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
-						bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
-					return aNum - bNum;
-				})
-				.sort((a, b) => {
-					return new Date(a.classDate) - new Date(b.classDate);
-				});
+			onlineNewData = onlineNewData.concat(this.sharingSort.onlineData);
+			// onlineNewData = [...new Set(onlineNewData.map((item) => JSON.stringify(item)))].map((item) => JSON.parse(item));
+			// onlineNewData
+			// 	.sort((a, b) => {
+			// 		let aNum = a.classTime ? Number(a.classTime.substr(0, 2)) : 0,
+			// 			bNum = b.classTime ? Number(b.classTime.substr(0, 2)) : 0;
+			// 		return aNum - bNum;
+			// 	})
+			// 	.sort((a, b) => {
+			// 		return new Date(a.classDate) - new Date(b.classDate);
+			// 	});
 			return onlineNewData;
 		},
 	},
