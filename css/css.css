@@ -53,7 +53,7 @@ h2{
 .tag{
   display: inline-block;
   margin: 5px 5px 0 0;
-  padding: 3px 10px;
+  padding: 0 10px;
   font-size: 14px;
   border-radius: 5px;
   color: #fff;
@@ -80,3 +80,6 @@ h2{
   vertical-align: text-bottom;
 }
 .nav-btn{display: inline-block; margin-left: 10px; padding: 2px 5px; background-color: rgb(88, 64, 154); color: #fff; border-radius: 3px;}
+.select{
+  width: 160px;
+}

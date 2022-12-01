@@ -10,18 +10,71 @@
 </head>
 <body>
   <div id="app">
-    <!-- <div v-for="item in monthClass" :key="item.id">
-      {{ item.classDate }},{{item.Title}}<br/>
-    </div> -->
-    <!-- <div v-for="item in growingClass" :key="item.id">
-      {{ item.classDate }},{{item.classDay}},{{item.Title}},{{item.classTime}}<br/>
-    </div> -->
-    <div v-for="item in onlineClass" :key="item.id">
-      {{ item.classDate }},{{item.classDay}},{{item.Title}},{{item.classTime}}<br/>
+    <div class="big-title">網頁版</div>
+    <div class="nav flex">
+      <span>請選擇日期：</span><select name="" id="" v-model="dateSelect" class="select">
+        <option v-for="(item,idx) in dateData" :key="'date-'+idx" :value="item.dfDate">{{item.dfDate}}</option>
+      </select>
+      <label>
+        <input v-model="tagCheck" type="checkbox" class="checkbox" />
+        顯示標籤
+      </label>
+      <a href="newindex-word.html" class="nav-btn">Word版</a>
     </div>
-    <!-- <div v-for="item in weekClass.growing" :key="item.id">
-      {{ item.classDate }},{{item.classDay}},{{item.Title}},{{item.classTime}}<br/>
-    </div> -->
+    <div class="warp">
+      <!--* 幸福學苑課程 -->
+      <div v-if="filterData.growing.length > 0">
+        <span class="typeTitle" v-if="dateSelect">
+          &#128142;【今日{{dateSelect}}】 幸福學苑課程
+        </span>
+        <div v-for="(item, index) in filterData.growing" :key="'growing-' + index" class="classItem">
+          <!-- {{item}}<br/> -->
+          &#10084;&#65039;<span v-if="item.class"><span v-if="item.class.substr(0, 2) === '必修'">必修課-</span><span v-if="item.class.substr(0, 2) === '孕產'">孕產親子課-</span></span>{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+          <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
+        <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime === '採預約制' ? '採預約制 (' + item.Address + ')' : item.classTime}}</span>
+        <span v-if="item.classType === '實體現場'"><br>實體課程:{{item.Address}}</span>
+        <span v-if="item.Url"><br>報名 <a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
+        <br><br>
+        </div>
+      </div>
+      <!--* 線上分享會 -->
+      <div v-if="filterData.online.length > 0">
+        <span class="typeTitle" v-if="dateSelect">
+          &#128142;【今日{{dateSelect}}】 線上分享會
+        </span>
+        <div v-for="(item, index) in filterData.online" :key="'online-' + index" class="classItem">
+          <!-- {{item}}<br/> -->
+          &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}} ({{item.Address.slice(2)}})</span>
+          <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
+        <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime}}</span>
+        <span v-if="item.Url"><br>報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
+        <br><br>
+        </div>
+      </div>
+      <!--* 實體分享會 -->
+      <div v-if="filterData.local.length > 0">
+        <span class="typeTitle" v-if="dateSelect">
+          &#128142;【今日{{dateSelect}}】 實體分享會
+        </span>
+        <div v-for="(item, index) in filterData.local" :key="'local-' + index" class="classItem">
+          <!-- {{item}}<br/> -->
+          <span v-if="item.classType === '實體現場'">【{{item.Address.substr(2)}}】</span><br>
+          &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+          <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
+        <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime}}</span>
+        <span v-if="item.classType === '實體現場'"><br>實體課地點:{{item.Address.slice(2)}}</span>
+        <span v-if="item.Url"><br>報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span><br>
+        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
+        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
+        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
+        <br><br>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.js'
