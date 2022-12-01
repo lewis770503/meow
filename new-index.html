@@ -67,12 +67,20 @@
           <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
         <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime}}</span>
         <span v-if="item.classType === '實體現場'"><br>實體課地點:{{item.Address.slice(2)}}</span>
-        <span v-if="item.Url"><br>報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span><br>
+        <span v-if="item.Url"><br>報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
         <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
         <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
         <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
         <br><br>
         </div>
+      </div>
+      <!--* 喵喵團隊會員專屬資源 -->
+      <div>
+        &#10084;&#65039;喵喵團隊會員專屬資源<br>
+        【幸福學苑】<br>
+        只要是喵喵團隊的有效會員，不需要再繳任何的費用，都可以免費參加幸福學苑的所有課程<br>
+        立刻申請加入<br>
+        &#128073;<a href="https://www.facebook.com/groups/240611857512678">https://www.facebook.com/groups/240611857512678</a>
       </div>
     </div>
   </div>
