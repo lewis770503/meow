@@ -11,33 +11,48 @@
 
   <body>
     <div id="app">
-      <div class="big-title">Word 版</div>
+      <div class="big-title">新 Word 版</div>
       <div class="nav flex">
         <label>
           <input v-model="tagCheck" type="checkbox" class="checkbox" />
           顯示標籤
         </label>
-        <a href="index.html" class="nav-btn">網頁版</a>
         <a href="new-index.html" class="nav-btn">新網頁版</a>
-        <a href="new-index-word.html" class="nav-btn">新Word版</a>
+        <a href="index.html" class="nav-btn">網頁版</a>
+        <a href="index-word.html" class="nav-btn">Word版</a>
       </div>
       <div class="warp">
         <h1>一、月份幸福學苑喵喵團隊專屬學習成長營</h1>
         <br />
-        <span class="typeTitle typeTitle-bg"
+        <!-- <span class="typeTitle typeTitle-bg"
           >【幸福學苑-每月固定課程】<br
-        /></span>
+        /></span> -->
         <div
-          v-for="(item,index) in growingSort"
+          v-for="(item, index) in growingClass"
           :key="'growing-' + index"
           class="classItem"
         >
-          <span
+          <!-- {{item.Title}}<br /> -->
+          <!-- index={{index}}<br /> -->
+          <span v-if="index===0">
+            <span class="typeTitle typeTitle-bg">
+              【幸福學苑社團- {{item.classDate}} ({{item.classDay}})課程】<br />
+            </span>
+          </span>
+          <span v-if="index>0">
+            <span
+              class="typeTitle typeTitle-bg"
+              v-if="item.classDate !== growingClass[index-1].classDate"
+            >
+              【幸福學苑社團- {{item.classDate}} ({{item.classDay}})課程】<br />
+            </span>
+          </span>
+          <!-- <span
             class="typeTitle typeTitle-bg"
-            v-if="item.Lesson !== '每月固定課程' && item.classDate !== growingSort[index-1].classDate"
+            v-if="item.classDate !== growingClass[index-1].classDate"
           >
             【幸福學苑社團- {{item.classDate}} ({{item.classDay}})課程】<br />
-          </span>
+          </span> -->
           &#10084;&#65039;<span v-if="item.Lesson === '每月固定課程'"
             >(專屬社團進行)</span
           ><span v-if="item.class"
@@ -72,31 +87,13 @@
           <div v-if="tagCheck && item.Check">
             <span class="tag tag--check">{{item.Check}}</span>
           </div>
-          <br />
-          <!-- <div v-if="item.Lesson !== '每月固定課程' && index+1<growingSort.length && item.classDate !== growingSort[index+1].classDate">
-          <br>&#10084;&#65039;{{allDayLesson[0].Title + '/' + allDayLesson[0].Teacher}}
-            <span v-if="item.Lesson === '單堂'"><br>{{allDayLesson[0].classTime === '採預約制' ? '採預約制 (' + allDayLesson[0].Address + ')' :
-              allDayLesson[0].classTime}}</span>
-            <span v-if="allDayLesson[0].classType === '實體現場'"><br>實體課程:{{allDayLesson[0].Address}}</span>
-            <span v-if="allDayLesson[0].Url"><br>報名 <a :href="allDayLesson[0].Url" target="_blank">{{allDayLesson[0].Url}}</a></span>
-            <div v-if="tagCheck && allDayLesson[0].Check">
-              <span class="tag tag--check">{{allDayLesson[0].Check}}</span>
-            </div>
-        </div> -->
-          <br />
+          <br /><br />
         </div>
-        <!-- <div>
-        &#10084;&#65039;{{allDayLesson[0].Title + '/' + allDayLesson[0].Teacher}}
-            <span><br>{{allDayLesson[0].classTime === '採預約制' ? '採預約制 (' + allDayLesson[0].Address + ')' :
-              allDayLesson[0].classTime}}</span>
-            <span v-if="allDayLesson[0].classType === '實體現場'"><br>實體課程:{{allDayLesson[0].Address}}</span>
-            <span v-if="allDayLesson[0].Url"><br>報名 <a :href="allDayLesson[0].Url" target="_blank">{{allDayLesson[0].Url}}</a></span>
-      </div> -->
         <br />
         <h1>二、月份喵喵團隊線上分享會</h1>
         <br />
         <div
-          v-for="(item, index) in sharingSort.onlineData"
+          v-for="(item, index) in onlineDefault"
           :key="'sharing-online-' + index"
           class="classItem"
         >
@@ -130,14 +127,14 @@
         <br />
         <span class="typeTitle typeTitle-bg">【喵喵團隊實體分享會-台北】</span>
         <div
-          v-for="(item, index) in sharingSort.localData"
+          v-for="(item, index) in localDefault"
           :key="'sharing-local-' + index"
           class="classItem"
         >
           <div v-if="item.classType === '實體現場' && index > 1">
             <span
               class="typeTitle typeTitle-bg"
-              v-if="item.Address.substr(2, 2) !== sharingSort.localData[index-1].Address.substr(2, 2)"
+              v-if="item.Address.substr(2, 2) !== localDefault[index-1].Address.substr(2, 2)"
               >【喵喵團隊實體分享會-{{item.Address.substr(2, 2)}}】</span
             >
           </div>
@@ -180,6 +177,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="js/xlsx.js"></script>
-    <script src="js/index-word.js"></script>
+    <script src="js/new-index-word.js"></script>
   </body>
 </html>

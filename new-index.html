@@ -1,94 +1,177 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/css.css">
-</head>
-<body>
-  <div id="app">
-    <div class="big-title">網頁版</div>
-    <div class="nav flex">
-      <span>請選擇日期：</span><select name="" id="" v-model="dateSelect" class="select">
-        <option v-for="(item,idx) in dateData" :key="'date-'+idx" :value="item.dfDate">{{item.dfDate}}</option>
-      </select>
-      <label>
-        <input v-model="tagCheck" type="checkbox" class="checkbox" />
-        顯示標籤
-      </label>
-      <a href="newindex-word.html" class="nav-btn">Word版</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/reset.css" />
+    <link rel="stylesheet" href="css/css.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div class="big-title">新網頁版</div>
+      <div class="nav flex">
+        <span>請選擇日期：</span
+        ><select name="" id="" v-model="dateSelect" class="select">
+          <option selected>請選擇日期</option>
+          <option
+            v-for="(item,idx) in dateData"
+            :key="'date-'+idx"
+            :value="item.dfDate"
+          >
+            {{item.dfDate}}
+          </option>
+        </select>
+        <label>
+          <input v-model="tagCheck" type="checkbox" class="checkbox" />
+          顯示標籤
+        </label>
+        <a href="new-index-word.html" class="nav-btn">新Word版</a>
+        <a href="index.html" class="nav-btn">網頁版</a>
+        <a href="index-word.html" class="nav-btn">Word版</a>
+      </div>
+      <div class="warp">
+        <!--* 幸福學苑課程 -->
+        <div v-if="filterData.growing.length > 0">
+          <span class="typeTitle" v-if="dateSelect">
+            &#128142;【今日{{dateSelect}}】 幸福學苑課程
+          </span>
+          <div
+            v-for="(item, index) in filterData.growing"
+            :key="'growing-' + index"
+            class="classItem"
+          >
+            <!-- {{item}}<br/> -->
+            &#10084;&#65039;<span v-if="item.class"
+              ><span v-if="item.class.substr(0, 2) === '必修'">必修課-</span
+              ><span v-if="item.class.substr(0, 2) === '孕產'"
+                >孕產親子課-</span
+              ></span
+            >{{item.Title}}
+            <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+            <span
+              v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"
+              ><br /><!--每週{{item.classDay}}&nbsp;-->{{item.classTime}}</span
+            >
+            <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"
+              ><br />{{item.classTime === '採預約制' ? '採預約制 (' +
+              item.Address + ')' : item.classTime}}</span
+            >
+            <span v-if="item.classType === '實體現場'"
+              ><br />實體課程:{{item.Address}}</span
+            >
+            <span v-if="item.Url"
+              ><br />報名
+              <a :href="item.Url" target="_blank">{{item.Url}}</a></span
+            >
+            <span class="tag tag--check" v-if="item.Check && tagCheck"
+              >{{item.Check}}</span
+            >
+            <br /><br />
+          </div>
+        </div>
+        <!--* 線上分享會 -->
+        <div v-if="filterData.online.length > 0">
+          <span class="typeTitle" v-if="dateSelect">
+            &#128142;【今日{{dateSelect}}】 線上分享會
+          </span>
+          <div
+            v-for="(item, index) in filterData.online"
+            :key="'online-' + index"
+            class="classItem"
+          >
+            <!-- {{item}}<br/> -->
+            &#10084;&#65039;{{item.Title}}
+            <span v-if="item.Teacher"
+              >{{" / " + item.Teacher}} ({{item.Address.slice(2)}})</span
+            >
+            <span
+              v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"
+              ><br />每週{{item.classDay}}&nbsp;{{item.classTime}}</span
+            >
+            <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"
+              ><br />{{item.classTime}}</span
+            >
+            <span v-if="item.Url"
+              ><br />報名：<a :href="item.Url" target="_blank"
+                >{{item.Url}}</a
+              ></span
+            >
+            <span class="tag tag--class" v-if="item.class && tagCheck"
+              >{{item.class}}</span
+            >
+            <span class="tag tag--classType" v-if="item.classType && tagCheck"
+              >{{item.classType}}</span
+            >
+            <span class="tag tag--check" v-if="item.Check && tagCheck"
+              >{{item.Check}}</span
+            >
+            <br /><br />
+          </div>
+        </div>
+        <!--* 實體分享會 -->
+        <div v-if="filterData.local.length > 0">
+          <span class="typeTitle" v-if="dateSelect">
+            &#128142;【今日{{dateSelect}}】 實體分享會
+          </span>
+          <div
+            v-for="(item, index) in filterData.local"
+            :key="'local-' + index"
+            class="classItem"
+          >
+            <!-- {{item}}<br/> -->
+            <span v-if="item.classType === '實體現場'"
+              >【{{item.Address.substr(2)}}】</span
+            ><br />
+            &#10084;&#65039;{{item.Title}}
+            <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
+            <span
+              v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"
+              ><br />每週{{item.classDay}}&nbsp;{{item.classTime}}</span
+            >
+            <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"
+              ><br />{{item.classTime}}</span
+            >
+            <span v-if="item.classType === '實體現場'"
+              ><br />實體課地點:{{item.Address.slice(2)}}</span
+            >
+            <span v-if="item.Url"
+              ><br />報名：<a :href="item.Url" target="_blank"
+                >{{item.Url}}</a
+              ></span
+            >
+            <span class="tag tag--class" v-if="item.class && tagCheck"
+              >{{item.class}}</span
+            >
+            <span class="tag tag--classType" v-if="item.classType && tagCheck"
+              >{{item.classType}}</span
+            >
+            <span class="tag tag--check" v-if="item.Check && tagCheck"
+              >{{item.Check}}</span
+            >
+            <br /><br />
+          </div>
+        </div>
+        <!--* 喵喵團隊會員專屬資源 -->
+        <div>
+          &#10084;&#65039;喵喵團隊會員專屬資源<br />
+          【幸福學苑】<br />
+          只要是喵喵團隊的有效會員，不需要再繳任何的費用，都可以免費參加幸福學苑的所有課程<br />
+          立刻申請加入<br />
+          &#128073;<a href="https://www.facebook.com/groups/240611857512678"
+            >https://www.facebook.com/groups/240611857512678</a
+          >
+        </div>
+      </div>
     </div>
-    <div class="warp">
-      <!--* 幸福學苑課程 -->
-      <div v-if="filterData.growing.length > 0">
-        <span class="typeTitle" v-if="dateSelect">
-          &#128142;【今日{{dateSelect}}】 幸福學苑課程
-        </span>
-        <div v-for="(item, index) in filterData.growing" :key="'growing-' + index" class="classItem">
-          <!-- {{item}}<br/> -->
-          &#10084;&#65039;<span v-if="item.class"><span v-if="item.class.substr(0, 2) === '必修'">必修課-</span><span v-if="item.class.substr(0, 2) === '孕產'">孕產親子課-</span></span>{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
-          <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
-        <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime === '採預約制' ? '採預約制 (' + item.Address + ')' : item.classTime}}</span>
-        <span v-if="item.classType === '實體現場'"><br>實體課程:{{item.Address}}</span>
-        <span v-if="item.Url"><br>報名 <a :href="item.Url" target="_blank">{{item.Url}}</a></span>
-        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
-        <br><br>
-        </div>
-      </div>
-      <!--* 線上分享會 -->
-      <div v-if="filterData.online.length > 0">
-        <span class="typeTitle" v-if="dateSelect">
-          &#128142;【今日{{dateSelect}}】 線上分享會
-        </span>
-        <div v-for="(item, index) in filterData.online" :key="'online-' + index" class="classItem">
-          <!-- {{item}}<br/> -->
-          &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}} ({{item.Address.slice(2)}})</span>
-          <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
-        <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime}}</span>
-        <span v-if="item.Url"><br>報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
-        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
-        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
-        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
-        <br><br>
-        </div>
-      </div>
-      <!--* 實體分享會 -->
-      <div v-if="filterData.local.length > 0">
-        <span class="typeTitle" v-if="dateSelect">
-          &#128142;【今日{{dateSelect}}】 實體分享會
-        </span>
-        <div v-for="(item, index) in filterData.local" :key="'local-' + index" class="classItem">
-          <!-- {{item}}<br/> -->
-          <span v-if="item.classType === '實體現場'">【{{item.Address.substr(2)}}】</span><br>
-          &#10084;&#65039;{{item.Title}} <span v-if="item.Teacher">{{" / " + item.Teacher}}</span>
-          <span v-if="item.Lesson === '每周固定課程' && item.classDay !== '每天'"><br>每週{{item.classDay}}&nbsp;{{item.classTime}}</span>
-        <span v-if="item.Lesson === '單堂' || item.classDay === '每天'"><br>{{item.classTime}}</span>
-        <span v-if="item.classType === '實體現場'"><br>實體課地點:{{item.Address.slice(2)}}</span>
-        <span v-if="item.Url"><br>報名：<a :href="item.Url" target="_blank">{{item.Url}}</a></span>
-        <span class="tag tag--class" v-if="item.class && tagCheck">{{item.class}}</span>
-        <span class="tag tag--classType" v-if="item.classType && tagCheck">{{item.classType}}</span>
-        <span class="tag tag--check" v-if="item.Check && tagCheck">{{item.Check}}</span>
-        <br><br>
-        </div>
-      </div>
-      <!--* 喵喵團隊會員專屬資源 -->
-      <div>
-        &#10084;&#65039;喵喵團隊會員專屬資源<br>
-        【幸福學苑】<br>
-        只要是喵喵團隊的有效會員，不需要再繳任何的費用，都可以免費參加幸福學苑的所有課程<br>
-        立刻申請加入<br>
-        &#128073;<a href="https://www.facebook.com/groups/240611857512678">https://www.facebook.com/groups/240611857512678</a>
-      </div>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.js'
-    integrity='sha512-rozBdNtS7jw9BlC76YF1FQGjz17qQ0J/Vu9ZCFIW374sEy4EZRbRcUZa2RU/MZ90X2mnLU56F75VfdToGV0RiA=='
-    crossorigin='anonymous'></script>
-  <script src="js/xlsx.js"></script>
-  <script src="js/new-index.js"></script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.js"
+      integrity="sha512-rozBdNtS7jw9BlC76YF1FQGjz17qQ0J/Vu9ZCFIW374sEy4EZRbRcUZa2RU/MZ90X2mnLU56F75VfdToGV0RiA=="
+      crossorigin="anonymous"
+    ></script>
+    <script src="js/xlsx.js"></script>
+    <script src="js/new-index.js"></script>
+  </body>
 </html>
