@@ -24,9 +24,15 @@
       <div class="warp">
         <h1>一、月份幸福學苑喵喵團隊專屬學習成長營</h1>
         <br />
-        <!-- <span class="typeTitle typeTitle-bg"
+        <span class="typeTitle typeTitle-bg"
           >【幸福學苑-每月固定課程】<br
-        /></span> -->
+        /></span>
+        <div v-for="(item, index) in monthClass">
+          &#10084;&#65039;(專屬社團進行){{item.Title}}<br/>
+          講者：{{item.Teacher}}<br/>
+          item.classDate<br/>
+          <br/><br/>
+        </div>
         <div
           v-for="(item, index) in growingClass"
           :key="'growing-' + index"
@@ -70,10 +76,10 @@
           <span v-if="item.Lesson === '每月固定課程'"
             ><br />{{item.classDate}}</span
           >
-          <span v-if="item.Lesson === '每周固定課程'"
+          <!-- <span v-if="item.Lesson === '每周固定課程'"
             ><br />{{item.classTime}}</span
-          >
-          <span v-if="item.Lesson === '單堂'"
+          > -->
+          <span
             ><br />{{item.classTime === '採預約制' ? '採預約制 (' + item.Address
             + ')' : item.classTime}}</span
           >
@@ -135,7 +141,7 @@
             <span
               class="typeTitle typeTitle-bg"
               v-if="item.Address.substr(2, 2) !== localDefault[index-1].Address.substr(2, 2)"
-              >【喵喵團隊實體分享會-{{item.Address.substr(2, 2)}}】</span
+              >【喵喵團隊實體分享會-{{item.Address.substr(2, 99)}}】</span
             >
           </div>
           &#10084;&#65039;{{item.Title}}<span v-if="item.Teacher"

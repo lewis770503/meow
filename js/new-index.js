@@ -32,7 +32,7 @@ var app = new Vue({
 	},
 	created() {
 		const dateFile = './file/date.xlsx',
-			learnFile = './file/newLearn.xlsx',
+			learnFile = './file/learn10.xlsx',
 			set = new Set();
 		axios
 			.get(learnFile, { responseType: 'arraybuffer' })
